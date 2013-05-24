@@ -1,4 +1,4 @@
-package com.example.testweibo;
+package cstdr.weibosdk.demo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,7 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.weibo.sdk.android.api.util.Util;
-import com.tencent.weibo.sdk.android.component.GeneralInterfaceActivity;
 import com.tencent.weibo.sdk.android.component.sso.AuthHelper;
 import com.tencent.weibo.sdk.android.component.sso.OnAuthListener;
 import com.tencent.weibo.sdk.android.component.sso.WeiboToken;
@@ -64,8 +63,6 @@ public class MainActivity extends Activity {
     private Button mBtnReadd;
 
     private Button mBtnDelAuth;
-
-    private Button mBtnComInterface;
 
     private TencentWeiboAPI weiboAPI;// 微博相关API
 
@@ -130,20 +127,27 @@ public class MainActivity extends Activity {
     }
 
     private void initSinaWeibo() {
-        mWeibo=Weibo.getInstance(Constants.SINA_APP_KEY, Constants.SINA_REDIRECT_URL, Constants.SINA_SCOPE);
+        mWeibo=Weibo.getInstance(Constants.SINA_APP_KEY, Constants.SINA_REDIRECT_URL);
         String token=PreferenceUtil.getInstance(context).getString(Constants.PREF_SINA_ACCESS_TOKEN, "");
-        long expiresTime=PreferenceUtil.getInstance(context).getLong(Constants.PREF_SINA_EXPIRES_IN, 0);
+        long expiresTime=PreferenceUtil.getInstance(context).getLong(Constants.PREF_SINA_EXPIRES_TIME, 0);
+        long uid=PreferenceUtil.getInstance(context).getLong(Constants.PREF_SINA_UID, 0);
+        String userName=PreferenceUtil.getInstance(context).getString(Constants.PREF_SINA_USER_NAME, "");
+        long remindIn=PreferenceUtil.getInstance(context).getLong(Constants.PREF_SINA_REMIND_IN, 0);
         accessToken=new Oauth2AccessToken();
         accessToken.setToken(token);
         accessToken.setExpiresTime(expiresTime);
         Log.i(TAG, "accessToken = " + accessToken);
         Log.i(TAG, "accessToken.getToken() = " + accessToken.getToken());
         Log.i(TAG, "accessToken.getExpiresTime() = " + accessToken.getExpiresTime());
+        Log.i(TAG, "uid = " + uid);
+        Log.i(TAG, "userName = " + userName);
+        Log.i(TAG, "remindIn = " + remindIn);
+
         if(MainActivity.accessToken.isSessionValid()) { // TODO 判断是否已授权
             String date=
                 new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(new java.util.Date(MainActivity.accessToken.getExpiresTime()));
             mTvAuthSina.setText("access_token 仍在有效期内,无需再次登录: \naccess_token:" + MainActivity.accessToken.getToken() + "\n有效期："
-                + date);
+                + date + "\nuid:" + uid + "\nuserName:" + userName + "\nremindIn:" + remindIn);
         } else {
             mTvAuthSina.setText("使用SSO登录前，请检查手机上是否已经安装新浪微博客户端，" + "目前仅3.0.0及以上微博客户端版本支持SSO；如果未安装，将自动转为Oauth2.0进行认证");
         }
@@ -152,7 +156,6 @@ public class MainActivity extends Activity {
     private void initTencentWeibo() {
         // TODO
         tencentTO=new TencentTO();
-
         String accessToken=PreferenceUtil.getInstance(context).getString(Constants.PREF_TX_ACCESS_TOKEN, "");
         if(TextUtils.isEmpty(accessToken)) {
             // 未授权
@@ -183,7 +186,6 @@ public class MainActivity extends Activity {
         initBtnAdd();
         initBtnReadd();
         initBtnDelAuth();
-        initBtnComInterface();
         // sina
         initTvAuthSina();
         initBtnAuthSina();
@@ -209,12 +211,6 @@ public class MainActivity extends Activity {
                     @Override
                     public void onError(WeiboException arg0) {
                         Log.i(TAG, "onError = " + arg0.getMessage());
-
-                    }
-
-                    @Override
-                    public void onComplete4binary(ByteArrayOutputStream arg0) {
-                        Log.i(TAG, "onComplete4binary");
 
                     }
 
@@ -249,12 +245,6 @@ public class MainActivity extends Activity {
                     }
 
                     @Override
-                    public void onComplete4binary(ByteArrayOutputStream arg0) {
-                        Log.i(TAG, "onComplete4binary");
-
-                    }
-
-                    @Override
                     public void onComplete(String uid) {
                         Log.i(TAG, "onComplete---uid = " + uid);
                     }
@@ -271,7 +261,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 // TODO
                 mSsoHandler=new SsoHandler(MainActivity.this, mWeibo);
-                mSsoHandler.authorize(new AuthDialogListener(), null);
+                mSsoHandler.authorize(new AuthDialogListener());
 
                 // mWeibo.anthorize(MainActivity.this, new AuthDialogListener()); // 网页授权
             }
@@ -283,17 +273,6 @@ public class MainActivity extends Activity {
     }
 
     // TX ================================================================
-    private void initBtnComInterface() {
-        mBtnComInterface=(Button)findViewById(R.id.btn_comInterface);
-        mBtnComInterface.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this, GeneralInterfaceActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
 
     private void initBtnDelAuth() {
         mBtnDelAuth=(Button)findViewById(R.id.btn_delAuth);
@@ -313,14 +292,6 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                // Intent intent=new Intent(MainActivity.this, ReAddActivity.class);
-                // Bundle bundle=new Bundle();
-                // bundle.putString("content", "Make U happy～～");
-                // bundle.putString("video_url", "http://www.tudou.com/programs/view/b-4VQLxwoX4/");
-                // bundle.putString("pic_url", "http://t2.qpic.cn/mblogpic/9c7e34358608bb61a696/2000");
-                // intent.putExtras(bundle);
-                // startActivity(intent);
-
                 weiboAPI=new TencentWeiboAPI(tencentTO);
                 weiboAPI.getUserInfo(new RequestListener() {
 
@@ -332,12 +303,6 @@ public class MainActivity extends Activity {
                     @Override
                     public void onError(WeiboException arg0) {
                         Log.i(TAG, "onError = " + arg0.getMessage());
-
-                    }
-
-                    @Override
-                    public void onComplete4binary(ByteArrayOutputStream arg0) {
-                        Log.i(TAG, "onComplete4binary");
 
                     }
 
@@ -378,12 +343,6 @@ public class MainActivity extends Activity {
                     @Override
                     public void onError(WeiboException arg0) {
                         Log.i(TAG, "onError = " + arg0.getMessage());
-
-                    }
-
-                    @Override
-                    public void onComplete4binary(ByteArrayOutputStream arg0) {
-                        Log.i(TAG, "onComplete4binary");
 
                     }
 
@@ -530,60 +489,25 @@ public class MainActivity extends Activity {
         @Override
         public void onComplete(Bundle values) {
             Log.i(TAG, "===================AuthDialogListener=onComplete==========");
-            mTvAuthSina.setText("onComplete~~~~~~~");
-            final String code=values.getString(Constants.SINA_CODE);
-            if(code != null) {
-                mTvAuthSina.setText("取得认证code = " + code);
-                // TODO
-                // new Thread() {
-                //
-                // @Override
-                // public void run() {
-                // getTokenByCode(code);
-                // }
-                //
-                // }.start();
+            for(String key: values.keySet()) {
+                Log.i(TAG, "values:key = " + key + " value = " + values.getString(key));
+            }
+            String token=values.getString(Constants.SINA_ACCESS_TOKEN);
+            long uid=values.getLong(Constants.SINA_UID);
+            String userName=values.getString(Constants.SINA_USER_NAME);
+            String expiresIn=values.getString(Constants.SINA_EXPIRES_IN); // expiresIn 是授权时长，因为要初始化，所以为String类型
+            long remindIn=values.getLong(Constants.SINA_REMIND_IN);
 
-                SinaWeiboAPI api=new SinaWeiboAPI(accessToken);
-                api.getTokenByCode(code, new RequestListener() {
-
-                    @Override
-                    public void onIOException(IOException arg0) {
-                    }
-
-                    @Override
-                    public void onError(WeiboException arg0) {
-                        Log.i(TAG, "onError = " + arg0);
-                    }
-
-                    @Override
-                    public void onComplete4binary(ByteArrayOutputStream arg0) {
-                    }
-
-                    @Override
-                    public void onComplete(String json) {
-                        JSONObject object;
-                        try {
-                            object=new JSONObject(json);
-                            String token=object.optString(Constants.SINA_ACCESS_TOKEN);
-                            String expiresIn=object.optString(Constants.SINA_EXPIRES_IN);
-                            String uid=object.optString(Constants.SINA_UID);
-                            Log.i(TAG, "token = " + token);
-                            Log.i(TAG, "expiresIn = " + expiresIn);
-                            Log.i(TAG, "uid = " + uid);
-                            MainActivity.accessToken=new Oauth2AccessToken(token, expiresIn);
-                            if(MainActivity.accessToken.isSessionValid()) {
-                                PreferenceUtil.getInstance(context).saveString(Constants.PREF_SINA_ACCESS_TOKEN, token);
-                                PreferenceUtil.getInstance(context).saveLong(Constants.PREF_SINA_EXPIRES_IN,
-                                    accessToken.getExpiresTime());
-                                PreferenceUtil.getInstance(context).saveString(Constants.PREF_SINA_UID, uid);
-                            }
-                        } catch(JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                Toast.makeText(MainActivity.this, "认证code成功", Toast.LENGTH_SHORT).show();
+            MainActivity.accessToken=new Oauth2AccessToken(token, expiresIn);
+            if(MainActivity.accessToken.isSessionValid()) {
+                PreferenceUtil.getInstance(context).saveString(Constants.PREF_SINA_ACCESS_TOKEN, token);
+                PreferenceUtil.getInstance(context).saveLong(Constants.PREF_SINA_UID, uid);
+                PreferenceUtil.getInstance(context).saveString(Constants.PREF_SINA_USER_NAME, userName);
+                PreferenceUtil.getInstance(context).saveLong(Constants.PREF_SINA_EXPIRES_TIME, accessToken.getExpiresTime()); // 存入的是到期时间
+                PreferenceUtil.getInstance(context).saveLong(Constants.PREF_SINA_REMIND_IN, remindIn);
+                mTvAuthSina.setText("onComplete~~~~~~~token = " + token + " uid = " + uid + " userName = " + userName
+                    + " expiresIn = " + expiresIn + " remindIn = " + remindIn);
+                Toast.makeText(MainActivity.this, "认证成功", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -613,8 +537,12 @@ public class MainActivity extends Activity {
 
     }
 
+    /**
+     * 自己写的根据Code返回Token，勿喷-_-||
+     * @deprecated 新版新浪微博jar包（20130524）已经可以直接返回Token等数据
+     * @param code
+     */
     private void getTokenByCode(String code) {
-        // TODO Auto-generated method stub
         String s=
             Constants.SINA_CLIENT_ID + "=" + Constants.SINA_APP_KEY + "&" + Constants.SINA_CLIENT_SECRET + "="
                 + Constants.SINA_APP_SECRET + "&" + Constants.SINA_GRANT_TYPE + "=" + Constants.SINA_GRANT_TYPE_VALUE + "&"
@@ -652,7 +580,7 @@ public class MainActivity extends Activity {
                 accessToken=new Oauth2AccessToken(token, expiresIn);
                 if(accessToken.isSessionValid()) {
                     PreferenceUtil.getInstance(context).saveString(Constants.PREF_SINA_ACCESS_TOKEN, token);
-                    PreferenceUtil.getInstance(context).saveLong(Constants.PREF_SINA_EXPIRES_IN, accessToken.getExpiresTime());
+                    PreferenceUtil.getInstance(context).saveLong(Constants.PREF_SINA_EXPIRES_TIME, accessToken.getExpiresTime());
                     PreferenceUtil.getInstance(context).saveLong(Constants.PREF_SINA_UID, uid);
 
                     // mTvAuthSina.setText("成功!  access_token = " + token + "expires_in = " + expiresTime + "有效期 = " + date);

@@ -1,4 +1,4 @@
-package com.example.testweibo;
+package cstdr.weibosdk.demo;
 
 import android.text.TextUtils;
 
@@ -9,7 +9,6 @@ import com.weibo.sdk.android.net.RequestListener;
 
 /**
  * 新浪微博API
- * @author ran.ding@downjoy.com
  */
 public class SinaWeiboAPI {
 
@@ -63,6 +62,7 @@ public class SinaWeiboAPI {
 
     /**
      * 根据授权Code请求Token
+     * @deprecated 最新版新浪微博jar包（20130524）已经可以直接返回Token
      * @param code 获得的授权Code
      * @param listener
      */

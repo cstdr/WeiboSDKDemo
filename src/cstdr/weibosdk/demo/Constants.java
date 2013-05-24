@@ -1,4 +1,4 @@
-package com.example.testweibo;
+package cstdr.weibosdk.demo;
 
 public interface Constants {
 
@@ -27,6 +27,10 @@ public interface Constants {
 
     String SINA_UID="uid";
 
+    String SINA_USER_NAME="userName";
+
+    String SINA_REMIND_IN="remind_in";
+
     String SINA_DATE_PATTERN="yyyy/MM/dd HH:mm:ss";
 
     String SINA_BASEURL="https://api.weibo.com/oauth2/";
@@ -43,11 +47,15 @@ public interface Constants {
 
     // 新浪微博首选项
 
-    String PREF_SINA_ACCESS_TOKEN="sina_access_token";
+    String PREF_SINA_ACCESS_TOKEN="SINA_ACCESS_TOKEN";
 
-    String PREF_SINA_EXPIRES_IN="sina_expires_time";
+    String PREF_SINA_EXPIRES_TIME="SINA_EXPIRES_TIME";
 
-    String PREF_SINA_UID="sina_uid";
+    String PREF_SINA_UID="SINA_UID";
+
+    String PREF_SINA_USER_NAME="SINA_USER_NAME";
+
+    String PREF_SINA_REMIND_IN="SINA_REMIND_IN";
 
     // 腾讯微博======================================================
 

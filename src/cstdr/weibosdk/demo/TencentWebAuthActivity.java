@@ -1,4 +1,4 @@
-package com.example.testweibo;
+package cstdr.weibosdk.demo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,7 +32,6 @@ import com.tencent.weibo.sdk.android.api.util.Util;
 
 /**
  * 腾讯微博网页授权组件
- * @author ran.ding@downjoy.com
  */
 public class TencentWebAuthActivity extends Activity {
 

@@ -1,5 +1,5 @@
 /** Automatically generated file. DO NOT MODIFY */
-package com.example.testweibo;
+package cstdr.weibosdk.demo;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;

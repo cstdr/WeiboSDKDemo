@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.testweibo"
+    package="cstdr.weibosdk.demo"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -24,22 +24,17 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.testweibo.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <!-- 腾讯微博 activity -->
-        <activity android:name="com.example.testweibo.TencentWebAuthActivity" >
+        <activity android:name=".TencentWebAuthActivity" >
         </activity>
     </application>
 
