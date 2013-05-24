@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_auth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="授权状态～～～～～～～"
+        android:text="" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_auth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="腾讯微博授权" />
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发微博" />
+
+        <Button
+            android:id="@+id/btn_readd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="获取用户信息" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_delAuth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="注销" />
+
+        <Button
+            android:id="@+id/btn_comInterface"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="通用接口" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_token"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="token"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/tv_auth_sina"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="新浪微博授权状态～～～～～～～"
+        android:text="" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_auth_sina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="新浪微博授权" />
+
+        <Button
+            android:id="@+id/btn_add_sina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发微博" />
+
+        <Button
+            android:id="@+id/btn_logout_sina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="注销" />
+    </LinearLayout>
+
+</LinearLayout>
