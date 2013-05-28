@@ -1,4 +1,4 @@
-package cstdr.weibosdk.demo;
+package cstdr.weibosdk.demo.share;
 
 public interface Constants {
 
@@ -28,6 +28,8 @@ public interface Constants {
     String SINA_UID="uid";
 
     String SINA_USER_NAME="userName";
+
+    String SINA_NAME="name";
 
     String SINA_REMIND_IN="remind_in";
 
@@ -110,5 +112,4 @@ public interface Constants {
     String TX_API_SYNCFLAG="syncflag";
 
     String TX_API_COMPATIBLEFLAG="compatibleflag";
-
 }

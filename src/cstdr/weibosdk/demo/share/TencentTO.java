@@ -1,4 +1,4 @@
-package cstdr.weibosdk.demo;
+package cstdr.weibosdk.demo.share;
 
 /**
  * 腾讯微博TO类

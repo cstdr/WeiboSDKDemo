@@ -1,4 +1,4 @@
-package cstdr.weibosdk.demo;
+package cstdr.weibosdk.demo.share;
 
 import android.text.TextUtils;
 
@@ -61,22 +61,6 @@ public class SinaWeiboAPI {
     }
 
     /**
-     * 根据授权Code请求Token
-     * @deprecated 最新版新浪微博jar包（20130524）已经可以直接返回Token
-     * @param code 获得的授权Code
-     * @param listener
-     */
-    public void getTokenByCode(String code, RequestListener listener) {
-        WeiboParameters params=new WeiboParameters();
-        params.add(Constants.SINA_CLIENT_ID, Constants.SINA_APP_KEY);
-        params.add(Constants.SINA_CLIENT_SECRET, Constants.SINA_APP_SECRET);
-        params.add(Constants.SINA_GRANT_TYPE, Constants.SINA_GRANT_TYPE_VALUE);
-        params.add(Constants.SINA_CODE, code);
-        params.add(Constants.SINA_REDIRECT_URI, Constants.SINA_REDIRECT_URL);
-        AsyncWeiboRunner.request(Constants.SINA_BASEURL + "/access_token", params, HTTPMETHOD_POST, listener);
-    }
-
-    /**
      * 根据用户ID获取用户信息
      * @param uid 需要查询的用户ID。
      * @param listener
@@ -125,15 +109,6 @@ public class SinaWeiboAPI {
             params.add("lat", lat);
         }
         request(URL_STATUSES + "/upload.json", params, HTTPMETHOD_POST, listener);
-    }
-
-    /**
-     * OAuth授权之后，获取授权用户的UID
-     * @param listener
-     */
-    public void getUid(RequestListener listener) {
-        WeiboParameters params=new WeiboParameters();
-        request(URL_ACCOUNT + "/get_uid.json", params, HTTPMETHOD_GET, listener);
     }
 
     /**

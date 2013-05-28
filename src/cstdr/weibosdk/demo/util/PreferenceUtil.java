@@ -1,4 +1,4 @@
-package cstdr.weibosdk.demo;
+package cstdr.weibosdk.demo.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

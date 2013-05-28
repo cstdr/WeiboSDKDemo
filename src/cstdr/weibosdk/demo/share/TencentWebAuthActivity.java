@@ -1,4 +1,7 @@
-package cstdr.weibosdk.demo;
+package cstdr.weibosdk.demo.share;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,14 +9,12 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,6 +30,9 @@ import android.widget.Toast;
 
 import com.tencent.weibo.sdk.android.api.util.BackGroudSeletor;
 import com.tencent.weibo.sdk.android.api.util.Util;
+
+import cstdr.weibosdk.demo.util.LOG;
+import cstdr.weibosdk.demo.util.PreferenceUtil;
 
 /**
  * 腾讯微博网页授权组件
@@ -88,7 +92,7 @@ public class TencentWebAuthActivity extends Activity {
                 if(clientId == null || "".equals(clientId) || redirectUri == null || "".equals(redirectUri)) {
                     Toast.makeText(TencentWebAuthActivity.this, "请在配置文件中填写相应的信息", Toast.LENGTH_SHORT).show();
                 }
-                Log.d("redirectUri", redirectUri);
+                LOG.cstdr("redirectUri", redirectUri);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 requestWindowFeature(Window.FEATURE_NO_TITLE);
                 int state=(int)Math.random() * 1000 + 111;
@@ -127,12 +131,12 @@ public class TencentWebAuthActivity extends Activity {
 
         RelativeLayout cannelLayout=new RelativeLayout(this);
         cannelLayout.setLayoutParams(fillWrapParams);
-        cannelLayout.setBackgroundDrawable(BackGroudSeletor.getdrawble("up_bg2x", getApplication()));
+        // cannelLayout.setBackgroundDrawable(BackGroudSeletor.getdrawble("up_bg2x", getApplication()));
         cannelLayout.setGravity(LinearLayout.HORIZONTAL);
 
         Button returnBtn=new Button(this);
         String[] pngArray={"quxiao_btn2x", "quxiao_btn_hover"};
-        returnBtn.setBackgroundDrawable(BackGroudSeletor.createBgByImageIds(pngArray, getApplication()));
+        // returnBtn.setBackgroundDrawable(BackGroudSeletor.createBgByImageIds(pngArray, getApplication()));
         returnBtn.setText("取消");
         wrapParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
         wrapParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
@@ -178,7 +182,7 @@ public class TencentWebAuthActivity extends Activity {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                Log.d("newProgress", newProgress + "..");
+                // LOG.cstdr("newProgress", newProgress + "..");
                 // if (dialog!=null&& !dialog.isShowing()) {
                 // dialog.show();
                 // }
@@ -190,7 +194,7 @@ public class TencentWebAuthActivity extends Activity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                Log.d("backurl", url);
+                LOG.cstdr("backurl", url);
                 if(url.indexOf("access_token") != -1 && !isShow) {
                     jumpResultParser(url);
                 }
@@ -229,14 +233,17 @@ public class TencentWebAuthActivity extends Activity {
         Context context=this.getApplicationContext();
         if(!TextUtils.isEmpty(accessToken)) {
             StringBuffer sb=new StringBuffer();
-            sb.append("accessToken = " + accessToken).append("\nexpiresIn = " + expiresIn).append("\nomasKey = " + openkey)
-                .append("\nopenID = " + openId).append("\nrefreshToken = " + refreshToken).append("\nstate = " + state)
-                .append("\nnick = " + nick);
-            Log.i(TAG, "onAuthPassed---name = " + name + " token = " + accessToken);
-            Log.i(TAG, "onAuthPassed = " + sb.toString());
+            try {
+                sb.append("accessToken = " + accessToken).append("\nexpiresIn = " + expiresIn).append("\nomasKey = " + openkey)
+                    .append("\nopenID = " + openId).append("\nrefreshToken = " + refreshToken).append("\nstate = " + state)
+                    .append("\nname = " + URLDecoder.decode(name, "UTF-8")).append("\nnick = " + URLDecoder.decode(nick, "UTF-8"));
+            } catch(UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            LOG.cstdr(TAG, "jumpResultParser = " + sb.toString());
 
             String clientId=Util.getConfig().getProperty(Constants.TX_APP_KEY);
-            String clientIp=MainActivity.getClientIp();
+            String clientIp=TencentWeiboUtil.getClientIp();
             PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_ACCESS_TOKEN, accessToken);
             PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_EXPIRES_IN, expiresIn);
             PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_OPEN_ID, openId);
@@ -247,12 +254,8 @@ public class TencentWebAuthActivity extends Activity {
             PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_EXPIRES_TIME,
                 String.valueOf(System.currentTimeMillis() + Long.parseLong(expiresIn) * 1000));
             PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_CLIENT_IP, clientIp);
-
-            // TODO
-            Intent intent=new Intent(MainActivity.ACTION_AUTH);
-            context.sendBroadcast(intent);
-            Toast.makeText(TencentWebAuthActivity.this, "授权成功", Toast.LENGTH_SHORT).show();
             isShow=true;
+            this.setResult(1); // TODO
             this.finish();
         }
     }
@@ -265,7 +268,7 @@ public class TencentWebAuthActivity extends Activity {
             super.handleMessage(msg);
             switch(msg.what) {
                 case 100:
-                    // Log.i("showDialog", "showDialog");
+                    // LOG.cstdr("showDialog", "showDialog");
                     showDialog(ALERT_NETWORK);
                     break;
             }
@@ -288,6 +291,7 @@ public class TencentWebAuthActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(Util.isNetworkAvailable(TencentWebAuthActivity.this)) {
+
                             webView.loadUrl(path);
                         } else {
                             Message msg=Message.obtain();

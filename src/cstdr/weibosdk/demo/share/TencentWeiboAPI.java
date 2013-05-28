@@ -1,4 +1,4 @@
-package cstdr.weibosdk.demo;
+package cstdr.weibosdk.demo.share;
 
 import com.weibo.sdk.android.WeiboParameters;
 import com.weibo.sdk.android.net.AsyncWeiboRunner;
