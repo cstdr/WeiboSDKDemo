@@ -4,10 +4,11 @@ public interface Constants {
 
     // 新浪微博======================================================
 
-    /** 官方申请正式的appkey **/
-    String SINA_APP_KEY="2557689284";
+    /** 申请的appkey,修改成你自己的才能使用 **/
+    String SINA_APP_KEY="1111111111";
 
-    String SINA_APP_SECRET="0a5c2535dec7cb47cafa475c2079d969";
+    /** 申请的App Secret,修改成你自己的才能使用 **/
+    String SINA_APP_SECRET="0a5c2535dec7cb47cafa475c20711111";
 
     // 回调地址，移动APP使用官方默认地址
     String SINA_REDIRECT_URL="https://api.weibo.com/oauth2/default.html";
@@ -60,6 +61,9 @@ public interface Constants {
     String PREF_SINA_REMIND_IN="SINA_REMIND_IN";
 
     // 腾讯微博======================================================
+
+    // 1. 修改配置文件，目标文件config.properties在Android_SDK.jar包config文件夹下(我已经改名为
+    // TencentWeiboSDK.jar)，把appkey、appsecret修改成自己应用对应的appkey和appsecret.
 
     /** 腾讯微博的Appkey请参考文档修改 **/
     String TX_APP_KEY="APP_KEY";
