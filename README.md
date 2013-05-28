@@ -1,7 +1,21 @@
 
-
 ## 新浪微博、腾讯微博开放平台DEMO（WeiboSDKDemo）
 *** 
+
+## WeiboSDKDemo使用方法
+
+* 请先熟悉官方文档，虽然其中有一些问题:)
+* 根据文档申请开放平台帐号，特别注意回调地址，这个经常出现错误；
+* 运行Demo前，先确定下载完Demo的所有文件；
+* 然后修改开放平台的AppKey和AppSecret：
+
+1. 新浪微博需要在Constants类中把appkey、appsecret修改成自己应用对应的appkey和appsecret，回调地址不需要修改；
+2. 腾讯微博需要修改配置文件，目标文件config.properties在Android_SDK.jar包config文件夹下(我已经改名为TencentWeiboSDK.jar)，把appkey、appsecret修改成自己应用对应的appkey和appsecret，这里再次提醒注意回调地址要和网上你填写的一致，别管文档怎么说.
+
+* 修改完后，clean工程，运行测试吧！下面是我自己的一点总结，如果你有好的建议，请分享下吧～
+
+***
+
 ### 新浪微博平台:
 
 * SSO一直没有测试成功，运行官方DEMO也如此，没有找到解决方法，已经确认是新浪的问题，没有开放大量注册，官方建议先使用老版本SDK ；今天发现新浪更新了文档和jar包，SSO可以正常使用，返回Token、uid、userName等信息； 
