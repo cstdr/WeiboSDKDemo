@@ -4,13 +4,13 @@ public interface Constants {
 
     // 新浪微博======================================================
 
-    // 官方申请正式的appkey
+    /** 官方申请正式的appkey **/
     String SINA_APP_KEY="2557689284";
 
-    // 回调地址，使用官方默认地址
-    String SINA_REDIRECT_URL="https://api.weibo.com/oauth2/default.html";
-
     String SINA_APP_SECRET="0a5c2535dec7cb47cafa475c2079d969";
+
+    // 回调地址，移动APP使用官方默认地址
+    String SINA_REDIRECT_URL="https://api.weibo.com/oauth2/default.html";
 
     // 新支持scope 支持传入多个scope权限，用逗号分隔，暂时用不上
     // String SINA_SCOPE="email,direct_messages_read,direct_messages_write,"
@@ -61,6 +61,7 @@ public interface Constants {
 
     // 腾讯微博======================================================
 
+    /** 腾讯微博的Appkey请参考文档修改 **/
     String TX_APP_KEY="APP_KEY";
 
     String TX_APP_KEY_SEC="APP_KEY_SEC";

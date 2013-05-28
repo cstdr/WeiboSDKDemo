@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         Log.i(TAG, "============onCreate==================");
         mContext=this;
         initView();
-
+        refreshView();
     }
 
     private void initView() {
@@ -233,6 +233,14 @@ public class MainActivity extends Activity {
                         LOG.cstdr("txtxt~~~~~~~~~~~~isValid = ", isValid + "");
                         if(isValid) {
                             mTvAuthTX.setText("腾讯微博已授权");
+                            String token=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_ACCESS_TOKEN, "");
+                            String openId=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_OPEN_ID, "");
+                            String name=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_NAME, "");
+                            String expiresTime=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_EXPIRES_TIME, "");
+                            String clientIp=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_CLIENT_IP, "");
+                            mTvTokenTX.setText("token = " + token + "\nopenId = " + openId + "\nname = " + name
+                                + "\nexpiresTime = " + expiresTime + "\nclientIp = " + clientIp);
+
                             MainActivity.getHandler().post(new Runnable() {
 
                                 @Override
@@ -257,8 +265,17 @@ public class MainActivity extends Activity {
 
                     @Override
                     public void init(boolean isValid) {
+                        LOG.cstdr("sina~~~~~~~~~~~~isValid = ", isValid + "");
                         if(isValid) {
                             mTvAuthSina.setText("新浪微博已授权");
+                            String token=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_SINA_ACCESS_TOKEN, "");
+                            long expiresTime=PreferenceUtil.getInstance(mContext).getLong(Constants.PREF_SINA_EXPIRES_TIME, 0);
+                            String uid=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_SINA_UID, "");
+                            String userName=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_SINA_USER_NAME, "");
+                            String remindIn=PreferenceUtil.getInstance(mContext).getString(Constants.PREF_SINA_REMIND_IN, "");
+                            mTvTokenSina.setText("access_token 仍在有效期内,无需再次登录: \naccess_token:" + token + "\nexpiresTime："
+                                + expiresTime + "\nuid:" + uid + "\nuserName:" + userName + "\nremindIn:" + remindIn);
+
                             MainActivity.getHandler().post(new Runnable() {
 
                                 @Override
