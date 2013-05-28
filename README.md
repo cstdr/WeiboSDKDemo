@@ -23,7 +23,6 @@
 2. 腾讯微博需要修改配置文件，目标文件config.properties在Android_SDK.jar包config文件夹下(我已经改名为TencentWeiboSDK.jar)，把appkey、appsecret修改成自己应用对应的appkey和appsecret，这里再次提醒注意回调地址要和网上你填写的一致，别管文档怎么说.
 
 * 修改完后，clean工程，运行测试吧！
-*
 
 下面是我自己的一点总结，如果你有好的建议，请分享下吧～
 
