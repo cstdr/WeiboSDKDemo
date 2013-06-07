@@ -296,6 +296,49 @@ public class SinaWeiboUtil {
 	}
 
 	/**
+	 * 上传图片并发布一条新微博，此方法会处理urlencode
+	 * 
+	 * @param content
+	 *            要发布的微博文本内容，内容不超过140个汉字
+	 * @param file
+	 *            要上传的图片，仅支持JPEG、GIF、PNG格式，图片大小小于5M。
+	 * @param lat
+	 *            纬度，有效范围：-90.0到+90.0，+表示北纬，默认为0.0。
+	 * @param lon
+	 *            经度，有效范围：-180.0到+180.0，+表示东经，默认为0.0。
+	 */
+	public void upload(String content, String file, String lat, String lon) {
+		SinaWeiboAPI api = new SinaWeiboAPI(mAccessToken);
+		api.upload(content, file, lat, lon, new RequestListener() {
+
+			@Override
+			public void onIOException(IOException e) {
+				LOG.cstdr(TAG, "onIOException---e = " + e.getMessage());
+				Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+			}
+
+			@Override
+			public void onError(WeiboException e) {
+				LOG.cstdr(TAG, "onError---e = " + e.getMessage()
+						+ " e.getStatusCode() = " + e.getStatusCode());
+				if (e.getStatusCode() == 400) { // 相同内容短时间内不能分享，判断还以促出错信息为准
+					Util.showToast(mContext, "分享失败，相同内容短时间内不能分享，请稍候再试吧。出错信息："
+							+ e.getMessage());
+				} else {
+					Util.showToast(mContext,
+							"分享失败，请检查网络连接。出错信息：" + e.getMessage());
+				}
+			}
+
+			@Override
+			public void onComplete(String str) {
+				LOG.cstdr(TAG, "onComplete---str = " + str);
+				Util.showToast(mContext, "分享成功，去你绑定的新浪微博看看吧！");
+			}
+		});
+	}
+
+	/**
 	 * 注销授权
 	 * 
 	 * @param l
