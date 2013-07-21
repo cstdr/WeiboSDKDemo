@@ -34,7 +34,7 @@
         </activity>
 
         <!-- 腾讯微博 activity -->
-        <activity android:name=".TencentWebAuthActivity" >
+        <activity android:name=".share.TencentWebAuthActivity" >
         </activity>
     </application>
 
