@@ -61,8 +61,8 @@ public class SinaWeiboAPI {
 	 * @param httpMethod
 	 * @param listener
 	 */
-	private void request(final String url, final WeiboParameters params,
-			final String httpMethod, RequestListener listener) {
+	private void request(final String url, final WeiboParameters params, final String httpMethod,
+			RequestListener listener) {
 		params.add("access_token", accessToken);
 		AsyncWeiboRunner.request(url, params, httpMethod, listener);
 	}
@@ -91,8 +91,7 @@ public class SinaWeiboAPI {
 	 *            经度，有效范围：-180.0到+180.0，+表示东经，默认为0.0。
 	 * @param listener
 	 */
-	public void update(String content, String lat, String lon,
-			RequestListener listener) {
+	public void update(String content, String lat, String lon, RequestListener listener) {
 		WeiboParameters params = new WeiboParameters();
 		params.add("status", content);
 		if (!TextUtils.isEmpty(lon)) {
@@ -101,8 +100,7 @@ public class SinaWeiboAPI {
 		if (!TextUtils.isEmpty(lat)) {
 			params.add("lat", lat);
 		}
-		request(URL_STATUSES + "/update.json", params, HTTPMETHOD_POST,
-				listener);
+		request(URL_STATUSES + "/update.json", params, HTTPMETHOD_POST, listener);
 	}
 
 	/**
@@ -118,8 +116,7 @@ public class SinaWeiboAPI {
 	 *            经度，有效范围：-180.0到+180.0，+表示东经，默认为0.0。
 	 * @param listener
 	 */
-	public void upload(String content, String file, String lat, String lon,
-			RequestListener listener) {
+	public void upload(String content, String file, String lat, String lon, RequestListener listener) {
 		WeiboParameters params = new WeiboParameters();
 		params.add("status", content);
 		params.add("pic", file);
@@ -129,8 +126,7 @@ public class SinaWeiboAPI {
 		if (!TextUtils.isEmpty(lat)) {
 			params.add("lat", lat);
 		}
-		request(URL_STATUSES + "/upload.json", params, HTTPMETHOD_POST,
-				listener);
+		request(URL_STATUSES + "/upload.json", params, HTTPMETHOD_POST, listener);
 	}
 
 	/**
@@ -140,7 +136,6 @@ public class SinaWeiboAPI {
 	 */
 	public void endSession(RequestListener listener) {
 		WeiboParameters params = new WeiboParameters();
-		request(URL_ACCOUNT + "/end_session.json", params, HTTPMETHOD_POST,
-				listener);
+		request(URL_ACCOUNT + "/end_session.json", params, HTTPMETHOD_POST, listener);
 	}
 }

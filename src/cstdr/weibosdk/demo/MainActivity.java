@@ -91,15 +91,14 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				TencentWeiboUtil.getInstance(mContext).logout(
-						new WeiboListener() {
+				TencentWeiboUtil.getInstance(mContext).logout(new WeiboListener() {
 
-							@Override
-							public void onResult() {
-								refreshView();
-							}
+					@Override
+					public void onResult() {
+						refreshView();
+					}
 
-						});
+				});
 			}
 		});
 	}
@@ -110,8 +109,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				TencentWeiboUtil.getInstance(mContext).addWeibo(
-						"腾讯微博开放平台，Hello world！～", 0, 0, 0, 0);
+				TencentWeiboUtil.getInstance(mContext).addWeibo("腾讯微博开放平台，Hello world！～", 0, 0, 0, 0);
 			}
 		});
 	}
@@ -123,21 +121,19 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (Util.checkNet(mContext)) {
-					TencentWeiboUtil.getInstance(mContext).auth(
-							new WeiboListener() {
+					TencentWeiboUtil.getInstance(mContext).auth(new WeiboListener() {
+
+						@Override
+						public void onResult() {
+							MainActivity.getHandler().post(new Runnable() {
 
 								@Override
-								public void onResult() {
-									MainActivity.getHandler().post(
-											new Runnable() {
-
-												@Override
-												public void run() {
-													refreshView();
-												}
-											});
+								public void run() {
+									refreshView();
 								}
 							});
+						}
+					});
 				}
 			}
 		});
@@ -178,15 +174,12 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				SinaWeiboUtil.getInstance(mContext).update(
-						"新浪微博开放平台，Hello world！～", null, null);
+				SinaWeiboUtil.getInstance(mContext).update("新浪微博开放平台，Hello world！～", null, null);
 
 				// 发送图片微博
-				String dir = Environment.getExternalStorageDirectory()
-						.getAbsolutePath();
+				String dir = Environment.getExternalStorageDirectory().getAbsolutePath();
 				String picPath = dir + "/cstdrpic.jpg"; // TODO 需要改成你SD卡下的图片地址
-				SinaWeiboUtil.getInstance(mContext).upload("测试，新浪微博开放平台图片微博～～",
-						picPath, null, null);
+				SinaWeiboUtil.getInstance(mContext).upload("测试，新浪微博开放平台图片微博～～", picPath, null, null);
 				LOG.cstdr(TAG, "picPath = " + picPath);
 
 			}
@@ -200,21 +193,19 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (Util.checkNet(mContext)) {
-					SinaWeiboUtil.getInstance(mContext).auth(
-							new WeiboListener() {
+					SinaWeiboUtil.getInstance(mContext).auth(new WeiboListener() {
+
+						@Override
+						public void onResult() {
+							MainActivity.getHandler().post(new Runnable() {
 
 								@Override
-								public void onResult() {
-									MainActivity.getHandler().post(
-											new Runnable() {
-
-												@Override
-												public void run() {
-													refreshView();
-												}
-											});
+								public void run() {
+									refreshView();
 								}
 							});
+						}
+					});
 				}
 			}
 		});
@@ -234,12 +225,9 @@ public class MainActivity extends Activity {
 	 * 刷新View
 	 */
 	private void refreshView() {
-		String sinaToken = PreferenceUtil.getInstance(mContext).getString(
-				Constants.PREF_SINA_ACCESS_TOKEN, "");
-		String tencentToken = PreferenceUtil.getInstance(mContext).getString(
-				Constants.PREF_TX_ACCESS_TOKEN, "");
-		LOG.cstdr("refreshUserView", "sinaToken = " + sinaToken
-				+ "   tencentToken = " + tencentToken);
+		String sinaToken = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_SINA_ACCESS_TOKEN, "");
+		String tencentToken = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_ACCESS_TOKEN, "");
+		LOG.cstdr("refreshUserView", "sinaToken = " + sinaToken + "   tencentToken = " + tencentToken);
 
 		if (TextUtils.isEmpty(sinaToken) && TextUtils.isEmpty(tencentToken)) { // 未授权
 			mTvAuthSina.setText("未授权");
@@ -253,130 +241,84 @@ public class MainActivity extends Activity {
 			});
 		} else {
 			if (TextUtils.isEmpty(sinaToken)) { // 初始化腾讯微博，判断是否授权过期
-				TencentWeiboUtil.getInstance(mContext).initTencentWeibo(
-						new WeiboListener() {
+				TencentWeiboUtil.getInstance(mContext).initTencentWeibo(new WeiboListener() {
 
-							@Override
-							public void init(boolean isValid) {
-								LOG.cstdr("txtxt~~~~~~~~~~~~isValid = ",
-										isValid + "");
-								if (isValid) {
-									mTvAuthTX.setText("腾讯微博已授权");
-									String token = PreferenceUtil.getInstance(
-											mContext).getString(
-											Constants.PREF_TX_ACCESS_TOKEN, "");
-									String openId = PreferenceUtil.getInstance(
-											mContext).getString(
-											Constants.PREF_TX_OPEN_ID, "");
-									String name = PreferenceUtil.getInstance(
-											mContext).getString(
-											Constants.PREF_TX_NAME, "");
-									String expiresTime = PreferenceUtil
-											.getInstance(mContext)
-											.getString(
-													Constants.PREF_TX_EXPIRES_TIME,
-													"");
-									String clientIp = PreferenceUtil
-											.getInstance(mContext)
-											.getString(
-													Constants.PREF_TX_CLIENT_IP,
-													"");
-									mTvTokenTX.setText("token = " + token
-											+ "\nopenId = " + openId
-											+ "\nname = " + name
-											+ "\nexpiresTime = " + expiresTime
-											+ "\nclientIp = " + clientIp);
+					@Override
+					public void init(boolean isValid) {
+						LOG.cstdr("txtxt~~~~~~~~~~~~isValid = ", isValid + "");
+						if (isValid) {
+							mTvAuthTX.setText("腾讯微博已授权");
+							String token = PreferenceUtil.getInstance(mContext).getString(
+									Constants.PREF_TX_ACCESS_TOKEN, "");
+							String openId = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_OPEN_ID,
+									"");
+							String name = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_NAME, "");
+							String expiresTime = PreferenceUtil.getInstance(mContext).getString(
+									Constants.PREF_TX_EXPIRES_TIME, "");
+							String clientIp = PreferenceUtil.getInstance(mContext).getString(
+									Constants.PREF_TX_CLIENT_IP, "");
+							mTvTokenTX.setText("token = " + token + "\nopenId = " + openId + "\nname = " + name
+									+ "\nexpiresTime = " + expiresTime + "\nclientIp = " + clientIp);
 
-									MainActivity.getHandler().post(
-											new Runnable() {
+							MainActivity.getHandler().post(new Runnable() {
 
-												@Override
-												public void run() {
-													Util.showToast(mContext,
-															"腾讯微博已授权");
-												}
-											});
-								} else {
-									mTvAuthTX.setText("授权已过期");
-									MainActivity.getHandler().post(
-											new Runnable() {
-
-												@Override
-												public void run() {
-													Util.showToast(mContext,
-															"腾讯微博授权已过期，请重新绑定。");
-												}
-											});
+								@Override
+								public void run() {
+									Util.showToast(mContext, "腾讯微博已授权");
 								}
-							}
-						});
+							});
+						} else {
+							mTvAuthTX.setText("授权已过期");
+							MainActivity.getHandler().post(new Runnable() {
+
+								@Override
+								public void run() {
+									Util.showToast(mContext, "腾讯微博授权已过期，请重新绑定。");
+								}
+							});
+						}
+					}
+				});
 			} else { // 初始化新浪微博，判断是否授权过期
-				SinaWeiboUtil.getInstance(mContext).initSinaWeibo(
-						new WeiboListener() {
+				SinaWeiboUtil.getInstance(mContext).initSinaWeibo(new WeiboListener() {
 
-							@Override
-							public void init(boolean isValid) {
-								LOG.cstdr("sina~~~~~~~~~~~~isValid = ", isValid
-										+ "");
-								if (isValid) {
-									mTvAuthSina.setText("新浪微博已授权");
-									String token = PreferenceUtil.getInstance(
-											mContext).getString(
-											Constants.PREF_SINA_ACCESS_TOKEN,
-											"");
-									long expiresTime = PreferenceUtil
-											.getInstance(mContext)
-											.getLong(
-													Constants.PREF_SINA_EXPIRES_TIME,
-													0);
-									String uid = PreferenceUtil.getInstance(
-											mContext).getString(
-											Constants.PREF_SINA_UID, "");
-									String userName = PreferenceUtil
-											.getInstance(mContext)
-											.getString(
-													Constants.PREF_SINA_USER_NAME,
-													"");
-									String remindIn = PreferenceUtil
-											.getInstance(mContext)
-											.getString(
-													Constants.PREF_SINA_REMIND_IN,
-													"");
-									mTvTokenSina
-											.setText("access_token 仍在有效期内,无需再次登录: \naccess_token:"
-													+ token
-													+ "\nexpiresTime："
-													+ expiresTime
-													+ "\nuid:"
-													+ uid
-													+ "\nuserName:"
-													+ userName
-													+ "\nremindIn:"
-													+ remindIn);
+					@Override
+					public void init(boolean isValid) {
+						LOG.cstdr("sina~~~~~~~~~~~~isValid = ", isValid + "");
+						if (isValid) {
+							mTvAuthSina.setText("新浪微博已授权");
+							String token = PreferenceUtil.getInstance(mContext).getString(
+									Constants.PREF_SINA_ACCESS_TOKEN, "");
+							long expiresTime = PreferenceUtil.getInstance(mContext).getLong(
+									Constants.PREF_SINA_EXPIRES_TIME, 0);
+							String uid = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_SINA_UID, "");
+							String userName = PreferenceUtil.getInstance(mContext).getString(
+									Constants.PREF_SINA_USER_NAME, "");
+							String remindIn = PreferenceUtil.getInstance(mContext).getString(
+									Constants.PREF_SINA_REMIND_IN, "");
+							mTvTokenSina.setText("access_token 仍在有效期内,无需再次登录: \naccess_token:" + token
+									+ "\nexpiresTime：" + expiresTime + "\nuid:" + uid + "\nuserName:" + userName
+									+ "\nremindIn:" + remindIn);
 
-									MainActivity.getHandler().post(
-											new Runnable() {
+							MainActivity.getHandler().post(new Runnable() {
 
-												@Override
-												public void run() {
-													Util.showToast(mContext,
-															"新浪微博已授权");
-												}
-											});
-								} else {
-									mTvAuthSina.setText("授权已过期");
-									MainActivity.getHandler().post(
-											new Runnable() {
-
-												@Override
-												public void run() {
-													Util.showToast(mContext,
-															"新浪微博授权已过期，请重新绑定。");
-												}
-											});
+								@Override
+								public void run() {
+									Util.showToast(mContext, "新浪微博已授权");
 								}
-							}
-						});
+							});
+						} else {
+							mTvAuthSina.setText("授权已过期");
+							MainActivity.getHandler().post(new Runnable() {
+
+								@Override
+								public void run() {
+									Util.showToast(mContext, "新浪微博授权已过期，请重新绑定。");
+								}
+							});
+						}
+					}
+				});
 			}
 		}
 	}
@@ -391,13 +333,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		LOG.cstdr(TAG,
-				"===================onActivityResult===========requestCode = "
-						+ requestCode);
+		LOG.cstdr(TAG, "===================onActivityResult===========requestCode = " + requestCode);
 		// sso 授权回调
 		if (requestCode == 32973) {
-			SinaWeiboUtil.getInstance(mContext).authCallBack(requestCode,
-					resultCode, data);
+			SinaWeiboUtil.getInstance(mContext).authCallBack(requestCode, resultCode, data);
 		} else if (requestCode == 1) {
 			TencentWeiboUtil.getInstance(mContext).webAuthOnResult();
 		}

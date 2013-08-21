@@ -85,29 +85,23 @@ public class TencentWebAuthActivity extends Activity {
 		} else {
 			DisplayMetrics displaysMetrics = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(displaysMetrics);
-			String pix = displaysMetrics.widthPixels + "x"
-					+ displaysMetrics.heightPixels;
+			String pix = displaysMetrics.widthPixels + "x" + displaysMetrics.heightPixels;
 			BackGroudSeletor.setPix(pix);
 
 			try {
 				// Bundle bundle = getIntent().getExtras();
 				clientId = Util.getConfig().getProperty("APP_KEY");// bundle.getString("APP_KEY");
 				redirectUri = Util.getConfig().getProperty("REDIRECT_URI");// bundle.getString("REDIRECT_URI");
-				if (clientId == null || "".equals(clientId)
-						|| redirectUri == null || "".equals(redirectUri)) {
-					Toast.makeText(TencentWebAuthActivity.this,
-							"请在配置文件中填写相应的信息", Toast.LENGTH_SHORT).show();
+				if (clientId == null || "".equals(clientId) || redirectUri == null || "".equals(redirectUri)) {
+					Toast.makeText(TencentWebAuthActivity.this, "请在配置文件中填写相应的信息", Toast.LENGTH_SHORT).show();
 				}
 				LOG.cstdr("redirectUri", redirectUri);
-				getWindow().setFlags(
-						WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 						WindowManager.LayoutParams.FLAG_FULLSCREEN);
 				requestWindowFeature(Window.FEATURE_NO_TITLE);
 				int state = (int) Math.random() * 1000 + 111;
-				path = "https://open.t.qq.com/cgi-bin/oauth2/authorize?client_id="
-						+ clientId
-						+ "&response_type=token&redirect_uri="
-						+ redirectUri + "&state=" + state;
+				path = "https://open.t.qq.com/cgi-bin/oauth2/authorize?client_id=" + clientId
+						+ "&response_type=token&redirect_uri=" + redirectUri + "&state=" + state;
 				this.initLayout();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -120,14 +114,11 @@ public class TencentWebAuthActivity extends Activity {
 	 */
 	public void initLayout() {
 		RelativeLayout.LayoutParams fillParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT,
-				RelativeLayout.LayoutParams.MATCH_PARENT);
+				RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 		RelativeLayout.LayoutParams fillWrapParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.MATCH_PARENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
+				RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		RelativeLayout.LayoutParams wrapParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
+				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 		dialog = new ProgressDialog(this);
 		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -152,8 +143,7 @@ public class TencentWebAuthActivity extends Activity {
 		// returnBtn.setBackgroundDrawable(BackGroudSeletor.createBgByImageIds(pngArray,
 		// getApplication()));
 		returnBtn.setText("取消");
-		wrapParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT,
-				RelativeLayout.TRUE);
+		wrapParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
 		wrapParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
 		wrapParams.leftMargin = 10;
 		wrapParams.topMargin = 10;
@@ -175,18 +165,15 @@ public class TencentWebAuthActivity extends Activity {
 		title.setTextColor(Color.WHITE);
 		title.setTextSize(24f);
 		RelativeLayout.LayoutParams titleParams = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		titleParams.addRule(RelativeLayout.CENTER_IN_PARENT,
-				RelativeLayout.TRUE);
+				RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		titleParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 		title.setLayoutParams(titleParams);
 		cannelLayout.addView(title);
 
 		layout.addView(cannelLayout);
 
 		webView = new WebView(this);
-		LinearLayout.LayoutParams wvParams = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
+		LinearLayout.LayoutParams wvParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
 		webView.setLayoutParams(wvParams);
 		WebSettings webSettings = webView.getSettings();
@@ -252,12 +239,9 @@ public class TencentWebAuthActivity extends Activity {
 		if (!TextUtils.isEmpty(accessToken)) {
 			StringBuffer sb = new StringBuffer();
 			try {
-				sb.append("accessToken = " + accessToken)
-						.append("\nexpiresIn = " + expiresIn)
-						.append("\nomasKey = " + openkey)
-						.append("\nopenID = " + openId)
-						.append("\nrefreshToken = " + refreshToken)
-						.append("\nstate = " + state)
+				sb.append("accessToken = " + accessToken).append("\nexpiresIn = " + expiresIn)
+						.append("\nomasKey = " + openkey).append("\nopenID = " + openId)
+						.append("\nrefreshToken = " + refreshToken).append("\nstate = " + state)
 						.append("\nname = " + URLDecoder.decode(name, "UTF-8"))
 						.append("\nnick = " + URLDecoder.decode(nick, "UTF-8"));
 			} catch (UnsupportedEncodingException e) {
@@ -265,29 +249,18 @@ public class TencentWebAuthActivity extends Activity {
 			}
 			LOG.cstdr(TAG, "jumpResultParser = " + sb.toString());
 
-			String clientId = Util.getConfig()
-					.getProperty(Constants.TX_APP_KEY);
+			String clientId = Util.getConfig().getProperty(Constants.TX_APP_KEY);
 			String clientIp = TencentWeiboUtil.getClientIp();
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_ACCESS_TOKEN, accessToken);
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_EXPIRES_IN, expiresIn);
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_OPEN_ID, openId);
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_OPEN_KEY, openkey);
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_REFRESH_TOKEN, refreshToken); // 总是为null
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_NAME, name);
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_CLIENT_ID, clientId);
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_EXPIRES_TIME,
-					String.valueOf(System.currentTimeMillis()
-							+ Long.parseLong(expiresIn) * 1000));
-			PreferenceUtil.getInstance(context).saveString(
-					Constants.PREF_TX_CLIENT_IP, clientIp);
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_ACCESS_TOKEN, accessToken);
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_EXPIRES_IN, expiresIn);
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_OPEN_ID, openId);
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_OPEN_KEY, openkey);
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_REFRESH_TOKEN, refreshToken); // 总是为null
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_NAME, name);
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_CLIENT_ID, clientId);
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_EXPIRES_TIME,
+					String.valueOf(System.currentTimeMillis() + Long.parseLong(expiresIn) * 1000));
+			PreferenceUtil.getInstance(context).saveString(Constants.PREF_TX_CLIENT_IP, clientIp);
 			isShow = true;
 			this.setResult(1); // TODO
 			this.finish();
@@ -320,30 +293,28 @@ public class TencentWebAuthActivity extends Activity {
 		case ALERT_NETWORK:
 			AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
 			builder2.setTitle("网络连接异常，是否重新连接？");
-			builder2.setPositiveButton("是",
-					new DialogInterface.OnClickListener() {
+			builder2.setPositiveButton("是", new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							if (Util.isNetworkAvailable(TencentWebAuthActivity.this)) {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					if (Util.isNetworkAvailable(TencentWebAuthActivity.this)) {
 
-								webView.loadUrl(path);
-							} else {
-								Message msg = Message.obtain();
-								msg.what = 100;
-								handle.sendMessage(msg);
-							}
-						}
+						webView.loadUrl(path);
+					} else {
+						Message msg = Message.obtain();
+						msg.what = 100;
+						handle.sendMessage(msg);
+					}
+				}
 
-					});
-			builder2.setNegativeButton("否",
-					new DialogInterface.OnClickListener() {
+			});
+			builder2.setNegativeButton("否", new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							TencentWebAuthActivity.this.finish();
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					TencentWebAuthActivity.this.finish();
+				}
+			});
 			_dialog = builder2.create();
 			break;
 		}

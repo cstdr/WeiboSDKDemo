@@ -77,23 +77,18 @@ public class TencentWeiboUtil {
 	 *            授权是否过期回调函数
 	 */
 	public void initTencentWeibo(WeiboListener l) {
-		String accessToken = PreferenceUtil.getInstance(mContext).getString(
-				Constants.PREF_TX_ACCESS_TOKEN, "");
+		String accessToken = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_ACCESS_TOKEN, "");
 		if (TextUtils.isEmpty(accessToken)) { // 未授权
 			l.init(false);
 		} else {
-			long expiresTime = Long.parseLong(PreferenceUtil.getInstance(
-					mContext).getString(Constants.PREF_TX_EXPIRES_TIME, ""));
+			long expiresTime = Long.parseLong(PreferenceUtil.getInstance(mContext).getString(
+					Constants.PREF_TX_EXPIRES_TIME, ""));
 			LOG.cstdr(TAG, "expiresTime = " + expiresTime);
-			LOG.cstdr(TAG, "expiresTime - System.currentTimeMillis() = "
-					+ (expiresTime - System.currentTimeMillis()));
+			LOG.cstdr(TAG, "expiresTime - System.currentTimeMillis() = " + (expiresTime - System.currentTimeMillis()));
 			if (expiresTime - System.currentTimeMillis() > 0) { // 已授权未过期
-				String openId = PreferenceUtil.getInstance(mContext).getString(
-						Constants.PREF_TX_OPEN_ID, "");
-				String clientId = PreferenceUtil.getInstance(mContext)
-						.getString(Constants.PREF_TX_CLIENT_ID, "");
-				String clientIp = PreferenceUtil.getInstance(mContext)
-						.getString(Constants.PREF_TX_CLIENT_IP, "");
+				String openId = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_OPEN_ID, "");
+				String clientId = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_CLIENT_ID, "");
+				String clientIp = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_CLIENT_IP, "");
 				tencentTO.setAccessToken(accessToken);
 				tencentTO.setOpenId(openId);
 				tencentTO.setAppkey(clientId);
@@ -113,10 +108,10 @@ public class TencentWeiboUtil {
 	 * @param l
 	 */
 	public void auth(final WeiboListener l) {
-		long appId = Long.valueOf(com.tencent.weibo.sdk.android.api.util.Util
-				.getConfig().getProperty(Constants.TX_APP_KEY));
-		String appSecket = com.tencent.weibo.sdk.android.api.util.Util
-				.getConfig().getProperty(Constants.TX_APP_KEY_SEC);
+		long appId = Long.valueOf(com.tencent.weibo.sdk.android.api.util.Util.getConfig().getProperty(
+				Constants.TX_APP_KEY));
+		String appSecket = com.tencent.weibo.sdk.android.api.util.Util.getConfig()
+				.getProperty(Constants.TX_APP_KEY_SEC);
 		listener = l;
 		LOG.cstdr(TAG, "appId = " + appId + " appSecket = " + appSecket);
 		// test 网页授权
@@ -128,53 +123,39 @@ public class TencentWeiboUtil {
 			@Override
 			public void onWeiboVersionMisMatch() {
 				Util.showToast(mContext, "腾讯微博版本不符合");
-				Intent intent = new Intent(mContext,
-						TencentWebAuthActivity.class);
+				Intent intent = new Intent(mContext, TencentWebAuthActivity.class);
 				((Activity) mContext).startActivityForResult(intent, 1);
 			}
 
 			@Override
 			public void onWeiBoNotInstalled() {
 				Util.showToast(mContext, "腾讯微博客户端没有安装");
-				Intent intent = new Intent(mContext,
-						TencentWebAuthActivity.class);
+				Intent intent = new Intent(mContext, TencentWebAuthActivity.class);
 				((Activity) mContext).startActivityForResult(intent, 1);
 			}
 
 			@Override
 			public void onAuthPassed(String name, WeiboToken token) {
 				StringBuffer sb = new StringBuffer();
-				sb.append("token.accessToken = " + token.accessToken)
-						.append("\ntoken.expiresIn = " + token.expiresIn)
-						.append("\ntoken.omasKey = " + token.omasKey)
-						.append("\ntoken.omasToken = " + token.omasToken)
+				sb.append("token.accessToken = " + token.accessToken).append("\ntoken.expiresIn = " + token.expiresIn)
+						.append("\ntoken.omasKey = " + token.omasKey).append("\ntoken.omasToken = " + token.omasToken)
 						.append("\ntoken.openID = " + token.openID)
 						.append("\ntoken.refreshToken = " + token.refreshToken);
-				LOG.cstdr(TAG, "onAuthPassed---name = " + name + " token = "
-						+ token);
+				LOG.cstdr(TAG, "onAuthPassed---name = " + name + " token = " + token);
 				LOG.cstdr(TAG, "onAuthPassed = " + sb.toString());
-				String clientId = com.tencent.weibo.sdk.android.api.util.Util
-						.getConfig().getProperty(Constants.TX_APP_KEY);
+				String clientId = com.tencent.weibo.sdk.android.api.util.Util.getConfig().getProperty(
+						Constants.TX_APP_KEY);
 				String clientIp = getClientIp();
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_ACCESS_TOKEN, token.accessToken);
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_EXPIRES_IN,
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_ACCESS_TOKEN, token.accessToken);
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_EXPIRES_IN,
 						String.valueOf(token.expiresIn));
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_OPEN_ID, token.openID);
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_OPEN_KEY, token.omasKey);
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_REFRESH_TOKEN, token.refreshToken); // 总是为null
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_CLIENT_ID, clientId);
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_EXPIRES_TIME,
-						String.valueOf(System.currentTimeMillis()
-								+ token.expiresIn * 1000));
-				PreferenceUtil.getInstance(mContext).saveString(
-						Constants.PREF_TX_CLIENT_IP, clientIp);
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_OPEN_ID, token.openID);
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_OPEN_KEY, token.omasKey);
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_REFRESH_TOKEN, token.refreshToken); // 总是为null
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_CLIENT_ID, clientId);
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_EXPIRES_TIME,
+						String.valueOf(System.currentTimeMillis() + token.expiresIn * 1000));
+				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_CLIENT_IP, clientIp);
 
 				tencentTO.setAccessToken(token.accessToken);
 				tencentTO.setAppkey(clientId);
@@ -187,8 +168,7 @@ public class TencentWeiboUtil {
 
 			@Override
 			public void onAuthFail(int result, String error) {
-				LOG.cstdr(TAG, "onAuthFail---result = " + result + " error = "
-						+ error);
+				LOG.cstdr(TAG, "onAuthFail---result = " + result + " error = " + error);
 				Util.showToast(mContext, "授权失败。出错信息：" + error);
 			}
 		});
@@ -202,11 +182,10 @@ public class TencentWeiboUtil {
 	 */
 	public static String getClientIp() {
 		try {
-			for (Enumeration<NetworkInterface> mEnumeration = NetworkInterface
-					.getNetworkInterfaces(); mEnumeration.hasMoreElements();) {
+			for (Enumeration<NetworkInterface> mEnumeration = NetworkInterface.getNetworkInterfaces(); mEnumeration
+					.hasMoreElements();) {
 				NetworkInterface intf = mEnumeration.nextElement();
-				for (Enumeration<InetAddress> enumIPAddr = intf
-						.getInetAddresses(); enumIPAddr.hasMoreElements();) {
+				for (Enumeration<InetAddress> enumIPAddr = intf.getInetAddresses(); enumIPAddr.hasMoreElements();) {
 					InetAddress inetAddress = enumIPAddr.nextElement();
 					// 如果不是回环地址
 					if (!inetAddress.isLoopbackAddress()) {
@@ -252,8 +231,7 @@ public class TencentWeiboUtil {
 					// String nick=data.optString("nick"); // nick : 用户昵称
 					LOG.cstdr(TAG, "name = " + name);
 					// LOG.cstdr(TAG, "nick = " + nick);
-					PreferenceUtil.getInstance(mContext).saveString(
-							Constants.PREF_TX_NAME, name);
+					PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_TX_NAME, name);
 					if (l != null) {
 						l.onResult();
 					}
@@ -282,32 +260,28 @@ public class TencentWeiboUtil {
 	 * @param listener
 	 *            回调函数
 	 */
-	public void addWeibo(String content, long longitude, long latitude,
-			int syncflag, int compatibleflag) {
+	public void addWeibo(String content, long longitude, long latitude, int syncflag, int compatibleflag) {
 		TencentWeiboAPI weiboAPI = new TencentWeiboAPI(tencentTO);
-		weiboAPI.addWeibo(content, longitude, latitude, syncflag,
-				compatibleflag, new RequestListener() {
+		weiboAPI.addWeibo(content, longitude, latitude, syncflag, compatibleflag, new RequestListener() {
 
-					@Override
-					public void onIOException(IOException e) {
-						LOG.cstdr(TAG, "onIOException---e = " + e.getMessage());
-						Util.showToast(mContext,
-								"分享失败，请检查网络连接。出错信息：" + e.getMessage());
-					}
+			@Override
+			public void onIOException(IOException e) {
+				LOG.cstdr(TAG, "onIOException---e = " + e.getMessage());
+				Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+			}
 
-					@Override
-					public void onError(WeiboException e) {
-						LOG.cstdr(TAG, "onError---e = " + e.getMessage());
-						Util.showToast(mContext,
-								"分享失败，请检查网络连接。出错信息：" + e.getMessage());
-					}
+			@Override
+			public void onError(WeiboException e) {
+				LOG.cstdr(TAG, "onError---e = " + e.getMessage());
+				Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+			}
 
-					@Override
-					public void onComplete(String str) {
-						LOG.cstdr(TAG, "onComplete---str = " + str);
-						Util.showToast(mContext, "分享成功，去你绑定的腾讯微博看看吧！");
-					}
-				});
+			@Override
+			public void onComplete(String str) {
+				LOG.cstdr(TAG, "onComplete---str = " + str);
+				Util.showToast(mContext, "分享成功，去你绑定的腾讯微博看看吧！");
+			}
+		});
 	}
 
 	/**
@@ -316,8 +290,7 @@ public class TencentWeiboUtil {
 	 * @param l
 	 */
 	public void logout(WeiboListener l) {
-		PreferenceUtil.getInstance(mContext).remove(
-				Constants.PREF_TX_ACCESS_TOKEN);
+		PreferenceUtil.getInstance(mContext).remove(Constants.PREF_TX_ACCESS_TOKEN);
 		l.onResult();
 	}
 
@@ -327,8 +300,7 @@ public class TencentWeiboUtil {
 	 * @return true 已授权，false 未授权
 	 */
 	public boolean isAuth() {
-		String token = PreferenceUtil.getInstance(mContext).getString(
-				Constants.PREF_TX_ACCESS_TOKEN, "");
+		String token = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_TX_ACCESS_TOKEN, "");
 		if (TextUtils.isEmpty(token)) {
 			return false;
 		}

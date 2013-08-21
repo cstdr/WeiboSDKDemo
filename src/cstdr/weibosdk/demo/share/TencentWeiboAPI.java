@@ -48,8 +48,8 @@ public class TencentWeiboAPI {
 	 * @param httpMethod
 	 * @param listener
 	 */
-	private void request(final String url, final WeiboParameters params,
-			final String httpMethod, RequestListener listener) {
+	private void request(final String url, final WeiboParameters params, final String httpMethod,
+			RequestListener listener) {
 		params.add(Constants.TX_API_APP_KEY, tencentTO.getAppkey());
 		params.add(Constants.TX_API_ACCESS_TOKEN, tencentTO.getAccessToken());
 		params.add(Constants.TX_API_OPEN_ID, tencentTO.getOpenId());
@@ -77,8 +77,8 @@ public class TencentWeiboAPI {
 	 * @param listener
 	 *            回调函数
 	 */
-	public void addWeibo(String content, long longitude, long latitude,
-			int syncflag, int compatibleflag, RequestListener listener) {
+	public void addWeibo(String content, long longitude, long latitude, int syncflag, int compatibleflag,
+			RequestListener listener) {
 		WeiboParameters params = new WeiboParameters();
 		params.add(Constants.TX_API_CONTENT, content);
 		params.add(Constants.TX_API_LONGITUDE, longitude);
