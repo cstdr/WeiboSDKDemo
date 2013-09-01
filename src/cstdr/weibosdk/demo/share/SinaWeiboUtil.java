@@ -1,5 +1,6 @@
 package cstdr.weibosdk.demo.share;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
@@ -50,7 +51,7 @@ public class SinaWeiboUtil {
 	private WeiboListener listener;
 
 	public SinaWeiboUtil() {
-		mWeibo = Weibo.getInstance(Constants.SINA_APP_KEY, Constants.SINA_REDIRECT_URL);
+		mWeibo = Weibo.getInstance(Constants.SINA_APP_KEY, Constants.SINA_REDIRECT_URL, Constants.SINA_SCOPE);
 	}
 
 	public static SinaWeiboUtil getInstance(Context context) {
@@ -83,7 +84,7 @@ public class SinaWeiboUtil {
 		LOG.cstdr(TAG, "userName = " + userName);
 		LOG.cstdr(TAG, "remindIn = " + remindIn);
 
-		if (mAccessToken.isSessionValid()) { // TODO 判断是否已授权
+		if (mAccessToken.isSessionValid()) { // 判断是否已授权
 			String date = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(new java.util.Date(mAccessToken
 					.getExpiresTime()));
 			LOG.cstdr(TAG, "access_token 仍在有效期内,无需再次登录: \naccess_token:" + mAccessToken.getToken() + "\n有效期：" + date
@@ -222,6 +223,10 @@ public class SinaWeiboUtil {
 					e.printStackTrace();
 				}
 			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
+			}
 		});
 	}
 
@@ -260,6 +265,54 @@ public class SinaWeiboUtil {
 			public void onComplete(String str) {
 				LOG.cstdr(TAG, "onComplete---str = " + str);
 				Util.showToast(mContext, "分享成功，去你绑定的新浪微博看看吧！");
+			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
+			}
+		});
+	}
+
+	/**
+	 * 指定一个图片URL地址抓取后上传并同时发布一条新微博
+	 * 
+	 * @param content
+	 *            要发布的微博文本内容，内容不超过140个汉字
+	 * @param url
+	 *            图片的URL地址，必须以http开头。
+	 * @param lat
+	 *            纬度，有效范围：-90.0到+90.0，+表示北纬，默认为0.0。
+	 * @param lon
+	 *            经度，有效范围：-180.0到+180.0，+表示东经，默认为0.0。
+	 */
+	public void uploadUrlText(String content, String url, String lat, String lon) {
+		SinaWeiboAPI api = new SinaWeiboAPI(mAccessToken);
+		api.uploadUrlText(content, url, lat, lon, new RequestListener() {
+
+			@Override
+			public void onIOException(IOException e) {
+				LOG.cstdr(TAG, "onIOException---e = " + e.getMessage());
+				Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+			}
+
+			@Override
+			public void onError(WeiboException e) {
+				LOG.cstdr(TAG, "onError---e = " + e.getMessage() + " e.getStatusCode() = " + e.getStatusCode());
+				if (e.getStatusCode() == 400) { // 相同内容短时间内不能分享，判断还以促出错信息为准
+					Util.showToast(mContext, "分享失败，相同内容短时间内不能分享，请稍候再试吧。出错信息：" + e.getMessage());
+				} else {
+					Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+				}
+			}
+
+			@Override
+			public void onComplete(String str) {
+				LOG.cstdr(TAG, "onComplete---str = " + str);
+				Util.showToast(mContext, "分享成功，去你绑定的新浪微博看看吧！");
+			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
 			}
 		});
 	}
@@ -301,6 +354,10 @@ public class SinaWeiboUtil {
 				LOG.cstdr(TAG, "onComplete---str = " + str);
 				Util.showToast(mContext, "分享成功，去你绑定的新浪微博看看吧！");
 			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
+			}
 		});
 	}
 
@@ -309,9 +366,28 @@ public class SinaWeiboUtil {
 	 * 
 	 * @param l
 	 */
-	public void logout(WeiboListener l) {
-		PreferenceUtil.getInstance(mContext).remove(Constants.PREF_SINA_ACCESS_TOKEN);
-		l.onResult();
+	public void logout(final WeiboListener l) {
+		SinaWeiboAPI api = new SinaWeiboAPI(mAccessToken);
+		api.endSession(new RequestListener() {
+
+			@Override
+			public void onIOException(IOException arg0) {
+			}
+
+			@Override
+			public void onError(WeiboException arg0) {
+			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
+			}
+
+			@Override
+			public void onComplete(String arg0) {
+				PreferenceUtil.getInstance(mContext).remove(Constants.PREF_SINA_ACCESS_TOKEN);
+				l.onResult();
+			}
+		});
 	}
 
 	/**
@@ -321,10 +397,18 @@ public class SinaWeiboUtil {
 	 */
 	public boolean isAuth() {
 		String token = PreferenceUtil.getInstance(mContext).getString(Constants.PREF_SINA_ACCESS_TOKEN, "");
-		if (TextUtils.isEmpty(token)) {
-			return false;
+		long expiresTime = PreferenceUtil.getInstance(mContext).getLong(Constants.PREF_SINA_EXPIRES_TIME, 0);
+		mAccessToken = new Oauth2AccessToken();
+		mAccessToken.setToken(token);
+		mAccessToken.setExpiresTime(expiresTime);
+		if (mAccessToken.isSessionValid()) { // 判断是否已授权
+			String date = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(new java.util.Date(mAccessToken
+					.getExpiresTime()));
+			LOG.cstdr(TAG, "access_token 仍在有效期内,无需再次登录: \naccess_token:" + mAccessToken.getToken() + "\n有效期：" + date);
+			return true;
 		}
-		return true;
+		LOG.cstdr(TAG, "access_token 过期");
+		return false;
 	}
 
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -176,12 +175,21 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				SinaWeiboUtil.getInstance(mContext).update("新浪微博开放平台，Hello world！～", null, null);
 
-				// 发送图片微博
-				String dir = Environment.getExternalStorageDirectory().getAbsolutePath();
-				String picPath = dir + "/cstdrpic.jpg"; // TODO 需要改成你SD卡下的图片地址
-				SinaWeiboUtil.getInstance(mContext).upload("测试，新浪微博开放平台图片微博～～", picPath, null, null);
-				LOG.cstdr(TAG, "picPath = " + picPath);
+				// TODO 发送本地图片微博
+				// String dir =
+				// Environment.getExternalStorageDirectory().getAbsolutePath();
+				// String picPath = dir + "/cstdrpic.jpg"; // 需要改成你SD卡下的图片地址
+				// SinaWeiboUtil.getInstance(mContext).upload("测试，新浪微博开放平台图片微博～～",
+				// picPath, null, null);
+				// LOG.cstdr(TAG, "picPath = " + picPath);
 
+				// TODO 指定一个图片URL地址抓取后上传并同时发布一条新微博
+				// // 图片的URL地址，必须以http开头。
+				// String picUrl =
+				// "https://www.google.com.hk/images/srpr/logo4w.png";
+				// SinaWeiboUtil.getInstance(mContext).uploadUrlText("测试，新浪微博开放平台图片微博～～",
+				// picUrl, null, null);
+				// LOG.cstdr(TAG, "picUrl = " + picUrl);
 			}
 		});
 	}
@@ -240,7 +248,7 @@ public class MainActivity extends Activity {
 				}
 			});
 		} else {
-			if (TextUtils.isEmpty(sinaToken)) { // 初始化腾讯微博，判断是否授权过期
+			if (!TextUtils.isEmpty(tencentToken)) { // 初始化腾讯微博，判断是否授权过期
 				TencentWeiboUtil.getInstance(mContext).initTencentWeibo(new WeiboListener() {
 
 					@Override
@@ -279,7 +287,8 @@ public class MainActivity extends Activity {
 						}
 					}
 				});
-			} else { // 初始化新浪微博，判断是否授权过期
+			}
+			if (!TextUtils.isEmpty(sinaToken)) { // 初始化新浪微博，判断是否授权过期
 				SinaWeiboUtil.getInstance(mContext).initSinaWeibo(new WeiboListener() {
 
 					@Override

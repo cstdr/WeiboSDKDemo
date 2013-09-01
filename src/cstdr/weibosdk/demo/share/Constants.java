@@ -11,20 +11,17 @@ public interface Constants {
 	// 新浪微博======================================================
 
 	/** 申请的appkey,修改成你自己的才能使用 **/
-	String SINA_APP_KEY = "1111111111";
+	String SINA_APP_KEY = "230409856";
 
 	/** 申请的App Secret,修改成你自己的才能使用 **/
-	String SINA_APP_SECRET = "0a5c2535dec7cb47cafa475c20711111";
+	String SINA_APP_SECRET = "c4bb2921f622f256d3e2766c8aeb72a1";
 
 	// 回调地址，移动APP使用官方默认地址
 	String SINA_REDIRECT_URL = "https://api.weibo.com/oauth2/default.html";
 
 	// 新支持scope 支持传入多个scope权限，用逗号分隔，暂时用不上
-	// String SINA_SCOPE="email,direct_messages_read,direct_messages_write,"
-	// + "friendships_groups_read,friendships_groups_write,statuses_to_me_read,"
-	// + "follow_app_official_microblog";
-
-	String SINA_SCOPE = "";
+	String SINA_SCOPE = "email,direct_messages_read,direct_messages_write,"
+			+ "friendships_groups_read,friendships_groups_write,statuses_to_me_read," + "follow_app_official_microblog";
 
 	/** 认证Code **/
 	String SINA_CODE = "code";
@@ -42,8 +39,6 @@ public interface Constants {
 	String SINA_REMIND_IN = "remind_in";
 
 	String SINA_DATE_PATTERN = "yyyy/MM/dd HH:mm:ss";
-
-	String SINA_BASEURL = "https://api.weibo.com/oauth2/";
 
 	String SINA_CLIENT_ID = "client_id";
 

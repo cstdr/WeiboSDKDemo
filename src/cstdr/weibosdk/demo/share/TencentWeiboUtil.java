@@ -1,5 +1,6 @@
 package cstdr.weibosdk.demo.share;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -240,6 +241,10 @@ public class TencentWeiboUtil {
 				}
 
 			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
+			}
 		});
 	}
 
@@ -280,6 +285,10 @@ public class TencentWeiboUtil {
 			public void onComplete(String str) {
 				LOG.cstdr(TAG, "onComplete---str = " + str);
 				Util.showToast(mContext, "分享成功，去你绑定的腾讯微博看看吧！");
+			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
 			}
 		});
 	}
