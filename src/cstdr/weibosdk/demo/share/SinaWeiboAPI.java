@@ -26,6 +26,9 @@ public class SinaWeiboAPI {
 
 	private static final String URL_ACCOUNT = API_SERVER + "/account";
 
+	/** OAuth2的access_token接口 http://open.weibo.com/wiki/OAuth2/access_token **/
+	private static final String URL_ACCESS_TOKEN = "https://api.weibo.com/oauth2/access_token";
+
 	/** 根据用户ID获取用户信息 http://open.weibo.com/wiki/2/users/show **/
 	private static final String URL_USERS_SHOW = URL_USERS + "/show.json";
 
@@ -72,6 +75,19 @@ public class SinaWeiboAPI {
 		if (oAuth2accessToken != null) {
 			accessToken = oAuth2accessToken.getToken();
 		}
+	}
+
+	/**
+	 * 根据code获取AccessToken
+	 */
+	public void getAccessTokenByCode(String code, RequestListener listener) {
+		WeiboParameters params = new WeiboParameters();
+		params.add(Constants.SINA_CLIENT_ID, Constants.SINA_APP_KEY);
+		params.add(Constants.SINA_CLIENT_SECRET, Constants.SINA_APP_SECRET);
+		params.add(Constants.SINA_GRANT_TYPE, Constants.SINA_GRANT_TYPE_VALUE);
+		params.add(Constants.SINA_CODE, code);
+		params.add(Constants.SINA_REDIRECT_URI, Constants.SINA_REDIRECT_URL);
+		AsyncWeiboRunner.request(URL_ACCESS_TOKEN, params, HTTPMETHOD_POST, listener);
 	}
 
 	/**
@@ -183,6 +199,6 @@ public class SinaWeiboAPI {
 	 */
 	public void endSession(RequestListener listener) {
 		WeiboParameters params = new WeiboParameters();
-		request(URL_ACCOUNT_END_SESSION, params, HTTPMETHOD_POST, listener);
+		request(URL_ACCOUNT_END_SESSION, params, HTTPMETHOD_GET, listener);
 	}
 }

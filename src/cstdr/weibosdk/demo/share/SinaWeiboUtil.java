@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
@@ -114,14 +113,12 @@ public class SinaWeiboUtil {
 
 	/**
 	 * 授权回调函数
-	 * 
-	 * @author ran.ding@downjoy.com
 	 */
 	class AuthDialogListener implements WeiboAuthListener {
 
 		@Override
 		public void onCancel() {
-			LOG.cstdr(TAG, "===================AuthDialogListener=Auth cancel==========");
+			LOG.cstdr(TAG, "===================AuathDialogListener=Auth cancel==========");
 			Util.showToast(mContext, "取消授权操作。");
 		}
 
@@ -131,44 +128,20 @@ public class SinaWeiboUtil {
 			for (String key : values.keySet()) {
 				LOG.cstdr(TAG, "values:key = " + key + " value = " + values.getString(key));
 			}
-			String token = values.getString(Constants.SINA_ACCESS_TOKEN);
-			String uid = values.getString(Constants.SINA_UID);
-			String userName = values.getString(Constants.SINA_USER_NAME);
-			String expiresIn = values.getString(Constants.SINA_EXPIRES_IN); // expiresIn
-																			// 是授权时长，因为要初始化，所以为String类型
-			String remindIn = values.getString(Constants.SINA_REMIND_IN);
-
-			mAccessToken = new Oauth2AccessToken(token, expiresIn);
-			if (mAccessToken.isSessionValid()) {
-				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_SINA_ACCESS_TOKEN, token);
-				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_SINA_UID, uid);
-				PreferenceUtil.getInstance(mContext).saveLong(Constants.PREF_SINA_EXPIRES_TIME,
-						mAccessToken.getExpiresTime()); // 存入的是到期时间
-				PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_SINA_REMIND_IN, remindIn);
-				if (TextUtils.isEmpty(userName)) {
-					show(Long.parseLong(uid));
-				} else {
-					PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_SINA_USER_NAME, userName);
-					if (listener != null) {
-						listener.onResult();
-					}
-				}
-				LOG.cstdr(TAG, "isSessionValid~~~~~~~token = " + token + " uid = " + uid + " userName = " + userName
-						+ " expiresIn = " + expiresIn + " remindIn = " + remindIn);
-
-			}
+			String code = values.getString(Constants.SINA_CODE);
+			getAccessTokenByCode(code);
 		}
 
 		@Override
 		public void onError(WeiboDialogError e) {
 			LOG.cstdr(TAG, "===================AuthDialogListener=onError=WeiboDialogError = " + e.getMessage());
-			Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+			Util.showToast(mContext, "授权失败，请检查网络连接。出错信息：" + e.getMessage());
 		}
 
 		@Override
 		public void onWeiboException(WeiboException e) {
 			LOG.cstdr(TAG, "===================AuthDialogListener=onWeiboException=WeiboException = " + e.getMessage());
-			Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+			Util.showToast(mContext, "授权失败，请检查网络连接。出错信息：" + e.getMessage());
 		}
 	}
 
@@ -188,6 +161,64 @@ public class SinaWeiboUtil {
 	}
 
 	/**
+	 * 根据code获取AccessToken
+	 * 
+	 * @param code
+	 */
+	private void getAccessTokenByCode(String code) {
+		SinaWeiboAPI api = new SinaWeiboAPI(mAccessToken);
+		api.getAccessTokenByCode(code, new RequestListener() {
+
+			@Override
+			public void onIOException(IOException e) {
+				LOG.cstdr(TAG,
+						"===================getAccessTokenByCode=onIOException=WeiboDialogError = " + e.getMessage());
+				Util.showToast(mContext, "根据code获取AccessToken失败，请检查网络连接。出错信息：" + e.getMessage());
+			}
+
+			@Override
+			public void onError(WeiboException e) {
+				LOG.cstdr(TAG, "===================getAccessTokenByCode=onError=WeiboDialogError = " + e.getMessage());
+				Util.showToast(mContext, "根据code获取AccessToken失败，请检查网络连接。出错信息：" + e.getMessage());
+			}
+
+			@Override
+			public void onComplete4binary(ByteArrayOutputStream arg0) {
+			}
+
+			@Override
+			public void onComplete(String json) {
+				LOG.cstdr(TAG, "===================getAccessTokenByCode=onComplete==========");
+				LOG.cstdr(TAG, "json = " + json);
+				JSONObject object;
+				try {
+					object = new JSONObject(json);
+					String token = object.optString(Constants.SINA_ACCESS_TOKEN);
+					String uid = object.optString(Constants.SINA_UID);
+					String expiresIn = object.optString(Constants.SINA_EXPIRES_IN); // expiresIn
+					// 是授权时长，因为要初始化，所以为String类型
+					String remindIn = object.optString(Constants.SINA_REMIND_IN);
+					mAccessToken = new Oauth2AccessToken(token, expiresIn);
+					if (mAccessToken.isSessionValid()) {
+						PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_SINA_ACCESS_TOKEN, token);
+						PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_SINA_UID, uid);
+						PreferenceUtil.getInstance(mContext).saveLong(Constants.PREF_SINA_EXPIRES_TIME,
+								mAccessToken.getExpiresTime()); // 存入的是到期时间
+						PreferenceUtil.getInstance(mContext).saveString(Constants.PREF_SINA_REMIND_IN, remindIn);
+						show(Long.parseLong(uid));
+						LOG.cstdr(TAG, "isSessionValid~~~~~~~token = " + token + " uid = " + uid + " expiresIn = "
+								+ expiresIn + " remindIn = " + remindIn);
+
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
 	 * 网页授权时，需要单独获取UserName
 	 * 
 	 * @param uid
@@ -199,13 +230,13 @@ public class SinaWeiboUtil {
 			@Override
 			public void onIOException(IOException e) {
 				LOG.cstdr(TAG, "onIOException---e = " + e.getMessage());
-				Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+				Util.showToast(mContext, "获取UserName失败，请检查网络连接。出错信息：" + e.getMessage());
 			}
 
 			@Override
 			public void onError(WeiboException e) {
 				LOG.cstdr(TAG, "WeiboException---e = " + e.getMessage());
-				Util.showToast(mContext, "分享失败，请检查网络连接。出错信息：" + e.getMessage());
+				Util.showToast(mContext, "获取UserName失败，请检查网络连接。出错信息：" + e.getMessage());
 			}
 
 			@Override
@@ -371,11 +402,15 @@ public class SinaWeiboUtil {
 		api.endSession(new RequestListener() {
 
 			@Override
-			public void onIOException(IOException arg0) {
+			public void onIOException(IOException e) {
+				LOG.cstdr(TAG, "onIOException---e = " + e.getMessage());
+				Util.showToast(mContext, "注销授权失败，请检查网络连接。出错信息：" + e.getMessage());
 			}
 
 			@Override
-			public void onError(WeiboException arg0) {
+			public void onError(WeiboException e) {
+				LOG.cstdr(TAG, "onError---e = " + e.getMessage());
+				Util.showToast(mContext, "注销授权失败，请检查网络连接。出错信息：" + e.getMessage());
 			}
 
 			@Override

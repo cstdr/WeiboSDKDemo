@@ -238,12 +238,12 @@ public class MainActivity extends Activity {
 		LOG.cstdr("refreshUserView", "sinaToken = " + sinaToken + "   tencentToken = " + tencentToken);
 
 		if (TextUtils.isEmpty(sinaToken) && TextUtils.isEmpty(tencentToken)) { // 未授权
-			mTvAuthSina.setText("未授权");
-			mTvAuthTX.setText("未授权");
 			MainActivity.getHandler().post(new Runnable() {
 
 				@Override
 				public void run() {
+					mTvAuthTX.setText("未授权");
+					mTvAuthSina.setText("未授权");
 					Util.showToast(mContext, "未授权");
 				}
 			});
@@ -353,8 +353,6 @@ public class MainActivity extends Activity {
 
 	/**
 	 * 授权回调类
-	 * 
-	 * @author ran.ding@downjoy.com
 	 */
 	public class WeiboListener {
 
