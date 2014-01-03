@@ -110,3 +110,7 @@
 如果你有任何问题、建议或者想交个朋友，请联系我吧～
 
 我的邮箱: cstdingran(at)gmail.com （讨论问题请通过邮件）
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cstdr/weibosdkdemo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
