@@ -1,5 +1,7 @@
 ### 新浪微博、腾讯微博开放平台DEMO（WeiboSDKDemo）
 
+> ####20140105 因为新浪官方微博更新频繁，并且现在新浪的文档比较完善，建议大家先浏览[新浪官方GitHub][SinaWeiboGitHub]~
+
 * 最近学习开放平台，官方文档和Demo有点坑爹，经过几天的努力，写了一个DEMO，整合了新浪微博和腾讯微博，均能够SSO授权、网页授权和发微博，如果需要可以去看看源码，里面有注释说明
 * 代码使用自己感觉舒服的方式进行封装和整合，使用前需要修改的地方在下面有详细说明，如果有问题请随时联系我，或者咱们一起完善！～
 * 代码并没有整合所有API方法（其实我觉得这也没必要），当你需要哪个API接口，可以马上去官网查看API文档（文档也会变的），然后添加上去就可以啦～
@@ -122,3 +124,4 @@
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cstdr/weibosdkdemo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+[SinaWeiboGitHub]:https://github.com/mobileresearch/weibo_android_sdk
